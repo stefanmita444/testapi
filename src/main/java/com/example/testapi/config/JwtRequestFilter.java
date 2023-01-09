@@ -42,6 +42,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			jwtToken = requestTokenHeader.substring(7);
 			try {
 				username = jwtTokenUtil.getUsernameFromToken(jwtToken);
+				response.setHeader("Access-Control-Allow-Origin", "*");
+				logger.warn("inside");
 			} catch (IllegalArgumentException e) {
 				System.out.println("Unable to get JWT Token");
 			} catch (ExpiredJwtException e) {
@@ -54,6 +56,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 		// Once we get the token validate it.
 		if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+			logger.warn("inside second if");
 
 			UserDetails userDetails = this.jwtUserDetailsService.loadUserByUsername(username);
 

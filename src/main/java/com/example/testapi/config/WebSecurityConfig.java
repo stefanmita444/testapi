@@ -1,5 +1,7 @@
 package com.example.testapi.config;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +17,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -49,10 +53,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	@Override
-	protected void configure(HttpSecurity httpSecurity) throws Exception {
-		httpSecurity.cors().disable();
-		// We don't need CSRF for this example
-		httpSecurity.csrf().disable()
+	protected void configure(HttpSecurity http) throws Exception {
+		http.cors().configurationSource(new CorsConfigurationSource() {
+			@Override
+			public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+				CorsConfiguration config = new CorsConfiguration();
+				config.setAllowCredentials(true);
+				config.addAllowedOrigin("http://localhost:4200");
+				config.addAllowedHeader("*");
+				config.addAllowedMethod("*");
+				return config;
+			}
+		})
+				.and()
+				.csrf()
+				.disable()
 				// dont authenticate this particular request
 				.authorizeRequests()
 				.antMatchers("/authenticate")
@@ -67,7 +82,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		// store user's state.
 
 		// Add a filter to validate the tokens with every request
-		httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 	}
 
 }
