@@ -15,7 +15,7 @@ import com.example.testapi.models.Contractor;
 import com.example.testapi.services.ContractorService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*")
 @RequestMapping("api/data")
 public class ContractorController {
 
