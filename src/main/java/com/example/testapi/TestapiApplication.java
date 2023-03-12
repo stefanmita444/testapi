@@ -7,9 +7,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 @SpringBootApplication
 @CrossOrigin(origins = "*")
 public class TestapiApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(TestapiApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(TestapiApplication.class, args);
+    }
 
 }

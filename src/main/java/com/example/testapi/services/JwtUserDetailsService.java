@@ -1,25 +1,34 @@
 package com.example.testapi.services;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
-import org.springframework.security.core.userdetails.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.example.testapi.models.User;
+import com.example.testapi.repos.UserRepo;
+
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
+    @Autowired
+    UserRepo userRepo;
 
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<User> user = userRepo.findByUsername(username);
 
-		if ("admin".equals(username)) {
-			return new User("admin", "$2a$10$ixlPY3AAd4ty1l6E2IsQ9OFZi2ba9ZQE0bP7RFcGIWNhyFrrT3YUi",
-					new ArrayList<>());
-		} else {
-			throw new UsernameNotFoundException("User not found with username: " + username);
-		}
-	}
+        if (user.isPresent()) {
+
+            return new org.springframework.security.core.userdetails.User(user.get().getUsername(), user.get().getPassword(),
+                    new ArrayList<>());
+
+        } else {
+            throw new UsernameNotFoundException("User not found with username: " + username);
+        }
+    }
 
 }
