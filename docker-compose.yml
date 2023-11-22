@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  app_container:
+    image: stefanmita1234/ezer:app_container
+    container_name: app_container
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongodb
+    environment:
+      SPRING.DATA.MONGODB.HOST: mongodb
+      SPRING.DATA.MONGODB.port: 27017
+      SPRING.DATA.MONGODB.DATABASE: ezer
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:

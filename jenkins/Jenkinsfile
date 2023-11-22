@@ -1,0 +1,38 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_CREDENTIALS = credentials('docker_user')
+        AWS_USER = credentials('aws_user')
+    }
+
+    stages {
+        stage('AWS Config') {
+            steps {
+                sh '''
+                    aws configure set aws_access_key_id ${AWS_USER_USR}
+                    aws configure set secret_access_key ${AWS_USER_PSW}
+                    aws configure set region us-east-1
+                '''
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker login -u ${DOCKER_CREDENTIALS_USR} -p ${DOCKER_CREDENTIALS_PSW}'
+                sh 'docker build -t stefanmita1234/ezer:app_container .'
+                sh 'docker push stefanmita1234/ezer:app_container'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh '''
+                    aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 905679087351.dkr.ecr.us-east-1.amazonaws.com/ezer
+                    docker tag stefanmita1234/ezer:app_container 905679087351.dkr.ecr.us-east-1.amazonaws.com/ezer:app_container
+                    docker tag stefanmita1234/ezer:app_container 905679087351.dkr.ecr.us-east-1.amazonaws.com/ezer:app_container
+                    docker push 905679087351.dkr.ecr.us-east-1.amazonaws.com/ezer:app_container
+                '''
+            }
+        }
+    }
+}

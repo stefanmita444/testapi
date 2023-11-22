@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: my-spring-boot-app
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+
+
+server:
+  port: 8080
+
+jwt:
+    secret: Configured In DockerCompose inside aws instance
+
+aws:
+  s3:
+    bucketName: userprofilepicturebucket
+  access:
+    key:
+      id: Configured In DockerCompose inside aws instance
+  secret:
+    access:
+      key: Configured In DockerCompose inside aws instance
+
+
+
+logging:
+  pattern:
+    dateformat: "yyyy-MM-dd'T'HH:mm:ss.SSSZ, America/Chicago"
+
+
