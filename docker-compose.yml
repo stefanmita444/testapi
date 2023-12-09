@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app_container:
-    image: stefanmita1234/ezer:app_container
+    image: stefanmita1234/ezer:app_container_v2
     container_name: app_container
     ports:
       - "8080:8080"
@@ -14,7 +14,7 @@ services:
       SPRING.DATA.MONGODB.DATABASE: ezer
 
   mongodb:
-    image: mongo:latest
+    image: stefanmita1234/ezer:mongodb
     container_name: mongodb
     ports:
       - "27017:27017"

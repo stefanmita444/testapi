@@ -12,5 +12,4 @@ public interface InvitesRepo extends MongoRepository<Invite, String>{
     Optional<Invite> findByRequesterIdAndReceiverId(String requesterId, String receiverId);
     List<Invite> findByRequesterIdOrReceiverId(String requesterId, String receiverId);
 
-
 }

@@ -19,10 +19,10 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    @Value("${spring.data.mongodb.username}")
-    private String username;
-    @Value("${spring.data.mongodb.password}")
-    private String password;
+    //@Value("${spring.data.mongodb.username}")
+    //private String username;
+    //@Value("${spring.data.mongodb.password}")
+    //private String password;
     @Value("${spring.data.mongodb.host}")
     private String host;
     @Value("${spring.data.mongodb.port}")
@@ -32,7 +32,8 @@ public class ApplicationConfig {
 
     @Bean
     public MongoClient mongoClient() {
-        String uri = String.format("mongodb://%s:%s@%s:%s/%s?ssl=true&retryWrites=false", username, password, host, port, database);
+        //String uri = String.format("mongodb://%s:%s@%s:%s/%s?ssl=true&retryWrites=false", username, password, host, port, database);
+        String uri = String.format("mongodb://%s:%s", host, port);
         return MongoClients.create(uri);
     }
 

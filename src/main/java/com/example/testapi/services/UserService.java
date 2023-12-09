@@ -278,7 +278,6 @@ public class UserService {
         return userRepo.save(currentUser);
     }
 
-
     public List<UserDto> deleteFriend(FriendDto friendDto) throws UsernameNotFoundException{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         currentUser = findByUsername(authentication.getName());

@@ -7,15 +7,16 @@ spring:
       max-request-size: 20MB
   data:
     mongodb:
-      host:
+      host: localhost
       port: 27017
+      database: ezer
 
 
 server:
   port: 8080
 
 jwt:
-    secret: 
+    secret: somesecret
 
 aws:
   s3:
@@ -27,5 +28,3 @@ aws:
 logging:
   pattern:
     dateformat: "yyyy-MM-dd'T'HH:mm:ss.SSSZ, America/Chicago"
-
-
