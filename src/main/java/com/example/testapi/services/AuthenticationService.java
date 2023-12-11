@@ -30,7 +30,7 @@ public class AuthenticationService {
     private final CustomAuthenticationManager authenticationManager;
 
 
-    public JwtResponse register(SignUpDto signUpDto) throws CustomException, ParseException, UsernameNotFoundException {
+    public String register(SignUpDto signUpDto) throws CustomException, ParseException, UsernameNotFoundException {
 
         signUpDto.setEmail(signUpDto.getEmail().toLowerCase());
         signUpDto.setUsername(signUpDto.getUsername().toLowerCase());
@@ -94,7 +94,7 @@ public class AuthenticationService {
         log.info("Generating token");
         String token = jwtTokenUtil.generateToken(currentUser);
         log.info("Token generated");
-        return new JwtResponse(token);
+        return token;
     }
 
     private void authenticate(JwtRequest jwtRequest) throws AuthenticationException {
@@ -103,7 +103,7 @@ public class AuthenticationService {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(principal, credentials));
     }
 
-    public JwtResponse login (JwtRequest jwtRequest) throws CustomException{
+    public String login (JwtRequest jwtRequest) throws CustomException{
         log.info("Converting principal to lowercase");
         jwtRequest.setPrincipal(jwtRequest.getPrincipal().toLowerCase());
         log.info("Done");
@@ -117,7 +117,7 @@ public class AuthenticationService {
         log.info("Saving user in db");
         userRepo.save(currentUser);
         log.info("Done");
-        return new JwtResponse(jwtTokenUtil.generateToken(currentUser));
+        return jwtTokenUtil.generateToken(currentUser);
     }
 
 }

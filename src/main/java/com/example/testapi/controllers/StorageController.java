@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.testapi.models.PictureResponseDto;
+import com.example.testapi.models.ResponseWrapper;
 import com.example.testapi.services.S3SignedUrlService;
 
 import lombok.RequiredArgsConstructor;
@@ -21,22 +21,22 @@ public class StorageController {
     private final S3SignedUrlService s3SignedUrlService;
  
     @PostMapping("/generate-get-url/{userId}")
-    public ResponseEntity<PictureResponseDto> generateGetPresignedUrlRequest(
+    public ResponseEntity<ResponseWrapper<String>> generateGetPresignedUrlRequest(
             @PathVariable String userId ) {
         log.info("Generating GET url for key");
-        return ResponseEntity.ok().body(new PictureResponseDto(s3SignedUrlService.generateGetSignedUrl(userId)));
+        return ResponseEntity.ok().body(new ResponseWrapper<>(s3SignedUrlService.generateGetSignedUrl(userId)));
     }
 
     @PostMapping("/generate-put-url/{userId}")
-    public ResponseEntity<PictureResponseDto> generatePutPresignedUrlRequest(
+    public ResponseEntity<ResponseWrapper<String>> generatePutPresignedUrlRequest(
             @PathVariable String userId ) {
-        return ResponseEntity.ok().body(new PictureResponseDto(s3SignedUrlService.generatePutSignedUrl(userId)));
+        return ResponseEntity.ok().body(new ResponseWrapper<>(s3SignedUrlService.generatePutSignedUrl(userId)));
     }
 
     @PostMapping("/generate-delete-url/{userId}")
-    public ResponseEntity<PictureResponseDto> generateDeletePresignedUrlRequest(
+    public ResponseEntity<ResponseWrapper<String>> generateDeletePresignedUrlRequest(
             @PathVariable String userId ) {
-        return ResponseEntity.ok().body(new PictureResponseDto(s3SignedUrlService.generateDeleteSignedUrl(userId)));
+        return ResponseEntity.ok().body(new ResponseWrapper<>(s3SignedUrlService.generateDeleteSignedUrl(userId)));
     }
 
 }

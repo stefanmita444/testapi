@@ -23,10 +23,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.testapi.mappers.UserMapper;
 import com.example.testapi.models.Push;
+import com.example.testapi.models.ResponseWrapper;
 import com.example.testapi.models.UpdatedUserDTO;
 import com.example.testapi.models.User;
 import com.example.testapi.models.UserDto;
-import com.example.testapi.models.UserDtoListDto;
 import com.example.testapi.services.PushNotificationService;
 import com.example.testapi.services.UserService;
 
@@ -53,20 +53,20 @@ public class UserController {
             summary = "This endpoint will return a list of users"
     )
     @GetMapping
-    public ResponseEntity<UserDtoListDto> getUsers() {
+    public ResponseEntity<ResponseWrapper<List<UserDto>>> getUsers() {
         log.info("Initiating getUsers----------------");
-        return new ResponseEntity<>(new UserDtoListDto(userService.findAll().stream()
+        return new ResponseEntity<>(new ResponseWrapper<List<UserDto>>(userService.findAll().stream()
                 .map(UserMapper.INSTANCE::toDto)
                 .toList()), HttpStatus.OK);
     }
 
     @GetMapping("/getMyself")
-    public ResponseEntity<UserDto> getMyself() {
+    public ResponseEntity<ResponseWrapper<UserDto>> getMyself() {
         log.info("Getting current user-------------------");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByUsername(authentication.getName());
         log.info("Return Complete---------------------\n\n");
-        return new ResponseEntity<>( UserMapper.INSTANCE.toDto(user), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseWrapper<UserDto>(UserMapper.INSTANCE.toDto(user)), HttpStatus.OK);
     }
 
     @Operation(
@@ -74,7 +74,7 @@ public class UserController {
             summary = "This endpoint will return a list of users"
     )
     @GetMapping("/search")
-    public ResponseEntity<Page<UserDto>> searchUsers(
+    public ResponseEntity<ResponseWrapper<Page<UserDto>>> searchUsers(
             @Parameter(description = "Search query")
             @RequestParam("query") String query,
             @Parameter(description = "Page number")
@@ -90,7 +90,7 @@ public class UserController {
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
         Page<UserDto> results = userService.searchHandle(query, pageable);
         log.info("Fetching complete--------------------------\n\n");
-        return new ResponseEntity<>(results, HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseWrapper<>(results), HttpStatus.OK);
     }
 
     @Operation(
@@ -98,12 +98,12 @@ public class UserController {
             summary = "This endpoint will update a user and will return an updated user object"
     )
     @PatchMapping()
-    public ResponseEntity<UserDto> updateUser(
+    public ResponseEntity<ResponseWrapper<UserDto>> updateUser(
             @ModelAttribute UpdatedUserDTO userDto) {
         log.info("Initiating User Update----------------------------------------------");
         User updatedUser = userService.updateUser(userDto);
         log.info("User Update Complete-------------------------------------\n\n");
-        return ResponseEntity.ok(UserMapper.INSTANCE.toDto(updatedUser));
+        return ResponseEntity.ok(new ResponseWrapper<UserDto>(UserMapper.INSTANCE.toDto(updatedUser)));
     }
 
     @Operation(
@@ -139,13 +139,13 @@ public class UserController {
             summary = "This endpoint will Reset the purity of the current user and return a user object"
     )
     @PostMapping("/resetPurity")
-    public ResponseEntity<UserDto> resetPurity() {
+    public ResponseEntity<ResponseWrapper<UserDto>> resetPurity() {
         log.info("Initiating Purity Reset-------------------------------");
 
         User currentUser = userService.resetPurity();
 
         log.info("Purity Reset Complete---------------------------------\n\n");
-        return new ResponseEntity<>(UserMapper.INSTANCE.toDto(currentUser), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseWrapper<>(UserMapper.INSTANCE.toDto(currentUser)), HttpStatus.OK);
     }
 
     @Operation(
@@ -153,10 +153,10 @@ public class UserController {
             summary = "This endpoint will Delete a user from database and all references to the user"
     )
     @DeleteMapping()
-    public ResponseEntity<HttpStatus> deleteUser() {
+    public ResponseEntity<ResponseWrapper<HttpStatus>> deleteUser() {
         log.info("Initiating Deletion -----------------------");
         userService.deleteUser();
         log.info("Deletion Complete-----------------------------\n\n");
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseWrapper<>(HttpStatus.OK), HttpStatus.OK);
     }
 }
