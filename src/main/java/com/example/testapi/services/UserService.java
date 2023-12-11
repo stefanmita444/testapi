@@ -1,14 +1,12 @@
 package com.example.testapi.services;
 
-import com.example.testapi.exceptions.CustomException;
-import com.example.testapi.exceptions.ResourceNotFoundException;
-import com.example.testapi.mappers.UserMapper;
-import com.example.testapi.models.*;
-import com.example.testapi.repos.InvitesRepo;
-import com.example.testapi.repos.UserRepo;
-import io.github.jav.exposerversdk.PushClientException;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -16,14 +14,25 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import com.example.testapi.exceptions.CustomException;
+import com.example.testapi.exceptions.ResourceNotFoundException;
+import com.example.testapi.mappers.UserMapper;
+import com.example.testapi.models.FriendDto;
+import com.example.testapi.models.HandleInvite;
+import com.example.testapi.models.HandledInvite;
+import com.example.testapi.models.Invite;
+import com.example.testapi.models.InviteDto;
+import com.example.testapi.models.MultiDateFormatter;
+import com.example.testapi.models.UpdatedUserDTO;
+import com.example.testapi.models.User;
+import com.example.testapi.models.UserDto;
+import com.example.testapi.repos.InvitesRepo;
+import com.example.testapi.repos.UserRepo;
+
+import io.github.jav.exposerversdk.PushClientException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -78,7 +87,7 @@ public class UserService {
         return new PageImpl<>(userDtoList, pageable, userDtoList.size());
     }
 
-    public User uploadPicture(MultipartFile file){
+    public User uploadPicture(String pictureUrl){
 
         log.info("Getting current user");
 
@@ -86,14 +95,11 @@ public class UserService {
         currentUser = findByUsername(authentication.getName());
 
         log.info("Current user found");
-
-        String pictureUrl = storageService.uploadImage(currentUser.getUsername(), file);
-
         log.info("Setting the picture to the user");
-
         log.info("Checking if picture url is present");
+
         if (pictureUrl != null) {
-            log.info("Present");
+            log.info("Picture is not null");
             currentUser.setPicture(pictureUrl);
             log.info("Picture set");
         } else {
@@ -261,17 +267,11 @@ public class UserService {
             log.info("Purity is null");
         }
 
-        if (userDto.getImage() != null) {
+        if (userDto.getImageUrl() != null) {
             log.info("Changing picture");
-            String pictureUrl = storageService.uploadImage(currentUser.getUsername(), userDto.getImage());
-            log.info("Picture created\n\n");
             log.info("Setting picture");
-            if (pictureUrl != null) {
-                currentUser.setPicture(pictureUrl);
-                log.info("Picture has been set");
-            } else {
-                throw new CustomException("Could not upload image to cloud\n\n");
-            }
+            currentUser.setPicture(userDto.getImageUrl());
+            log.info("Picture has been set");
         } else {
             log.info("Picture is null");
         }

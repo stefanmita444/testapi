@@ -60,7 +60,7 @@ public class JwtAuthenticationController {
 
     @PostMapping("/refresh-token")
     public ResponseEntity<JwtRefreshToken> refreshToken(@RequestBody JwtRefreshToken refreshTokenValue) {
-        String refreshToken = jwtTokenService.createToken(refreshTokenValue.getToken());
+        String refreshToken = jwtTokenService.createToken(refreshTokenValue.getData());
 
         return ResponseEntity.ok(new JwtRefreshToken(refreshToken));
     }

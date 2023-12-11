@@ -10,5 +10,5 @@ import java.util.List;
 @AllArgsConstructor
 //@ApiModel(description = "List of friends")
 public class FriendsCollectionDto {
-    List<UserDto> friends = new ArrayList<>();
+    List<UserDto> data = new ArrayList<>();
 }

@@ -11,6 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 public class BugReportsList {
 
-    private List<BugReport> reports;
+    private List<BugReport> data;
 
 }

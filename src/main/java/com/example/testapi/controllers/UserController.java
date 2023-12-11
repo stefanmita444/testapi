@@ -1,16 +1,7 @@
 package com.example.testapi.controllers;
 
-import com.example.testapi.exceptions.CustomException;
-import com.example.testapi.mappers.UserMapper;
-import com.example.testapi.models.*;
-import com.example.testapi.services.PushNotificationService;
-import com.example.testapi.services.UserService;
-import io.github.jav.exposerversdk.PushClientException;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,11 +10,32 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartException;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.example.testapi.mappers.UserMapper;
+import com.example.testapi.models.Push;
+import com.example.testapi.models.UpdatedUserDTO;
+import com.example.testapi.models.User;
+import com.example.testapi.models.UserDto;
+import com.example.testapi.models.UserDtoListDto;
+import com.example.testapi.services.PushNotificationService;
+import com.example.testapi.services.UserService;
+
+import io.github.jav.exposerversdk.PushClientException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
@@ -35,7 +47,7 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
     private final PushNotificationService pushNotificationService;
-
+    
     @Operation(
             description = "Get endpoint for all users",
             summary = "This endpoint will return a list of users"
@@ -92,28 +104,6 @@ public class UserController {
         User updatedUser = userService.updateUser(userDto);
         log.info("User Update Complete-------------------------------------\n\n");
         return ResponseEntity.ok(UserMapper.INSTANCE.toDto(updatedUser));
-    }
-
-    @Operation(
-            description = "Picture Update Endpoint",
-            summary = "This endpoint will update a user's picture and will return an updated user object"
-    )
-    @PostMapping("/picture")
-    public ResponseEntity<UserDto> updatePicture(
-            @Parameter(description = "Multipart file", required = true)
-            @RequestParam("file") MultipartFile file) throws MultipartException {
-        try {
-
-            log.info("Initiating picture upload------------------");
-
-            User currentUser = userService.uploadPicture(file);
-
-            log.info("Picture uploaded successfully-----------------------\n\n");
-
-            return ResponseEntity.ok().body(UserMapper.INSTANCE.toDto(currentUser));
-        } catch (Exception e) {
-            throw new CustomException("Cannot upload picture ");
-        }
     }
 
     @Operation(

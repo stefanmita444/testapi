@@ -8,5 +8,5 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class InvitesDTO {
-    private List<InviteDto> invites;
+    private List<InviteDto> data;
 }

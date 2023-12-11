@@ -27,7 +27,7 @@ public class BugReportController {
             @RequestBody BugReportDto bugReport ) {
         log.info("Creating bug report ------------------------");
         BugReportWrapper report = new BugReportWrapper(bugReportService.createBugReport(bugReport));
-        log.info("Bug Report Created for: " + report.getReport().getId() + " ---------------\n\n");
+        log.info("Bug Report Created for: " + report.getData().getId() + " ---------------\n\n");
         return ResponseEntity.status(HttpStatus.OK).body(report);
     }
 

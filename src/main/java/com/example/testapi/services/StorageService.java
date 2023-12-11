@@ -30,7 +30,7 @@ public class StorageService {
         ObjectMetadata objectMetadata = new ObjectMetadata();
         String contentType = image.getContentType();
 
-        if (contentType.equals("application/octet-stream")) {
+        if (contentType != null && contentType.equals("application/octet-stream")) {
             log.info("Content type found: " + contentType);
             contentType = "image/jpeg";
         }

@@ -9,6 +9,6 @@ import java.util.List;
 @AllArgsConstructor
 public class ErrorListDTO {
 
-    private List<Error> errors;
+    private List<Error> data;
 
 }
