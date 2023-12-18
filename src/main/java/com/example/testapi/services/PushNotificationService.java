@@ -7,6 +7,8 @@ import com.example.testapi.repos.UserRepo;
 import io.github.jav.exposerversdk.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -38,6 +40,7 @@ public class PushNotificationService {
                 .collect(Collectors.toList());
     }
 
+    @Async
     public void sendPushNotificationToUser(String recipient, String title, String message) throws PushClientException, InterruptedException {
         validateToken(recipient);
         List<ExpoPushTicket> allTickets = sendNotification(recipient, title, message);
