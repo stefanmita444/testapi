@@ -135,11 +135,13 @@ public class UserService {
                 invitesRepo.save(invite);
                 log.info("invite saved in db");
                 notificationService.sendPushNotificationToUser(friend.getExpoPushToken(), "Friend request", currentUser.getFirstName() + " " + currentUser.getLastName() + " wants to be your friend!");
+                log.info("notification sent async");
             }
         } else {
             throw new CustomException("Requester has to be curren user\n\n");
         }
     }
+
 
     public List<InviteDto> getRequesterOrReceiverInvites() throws IllegalArgumentException{
         String principal = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -189,8 +191,10 @@ public class UserService {
         currentUser = findByUsername(authentication.getName());
         log.info("Fetching Friends");
         return currentUser.getFriends()
-                .stream().
-                map(this::findByUsername)
+                .stream()
+                .map(userRepo::findById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .map(UserMapper.INSTANCE::toDto)
                 .toList();
     }
