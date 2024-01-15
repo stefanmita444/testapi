@@ -371,9 +371,9 @@ public class UserService {
                 userRepo.save(friend);
                 log.error("Friend has added current user");
                 invitesRepo.delete(invite);
+                notificationService.sendPushNotificationToUser(friend.getExpoPushToken(), "Ezer", currentUser.getFirstName() + " " + currentUser.getLastName() + " accepted your invite!");
             } else if (handleInvite.getType().equals("cancel")){
                 invitesRepo.delete(invite);
-                notificationService.sendPushNotificationToUser(friend.getExpoPushToken(), "Ezer", currentUser.getFirstName() + " " + currentUser.getLastName() + " rejected your invite!");
             } else {
                 throw new IllegalArgumentException("Type can be only accept or cancel\n\n");
             }
