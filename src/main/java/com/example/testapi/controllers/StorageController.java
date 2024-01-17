@@ -20,23 +20,23 @@ public class StorageController {
 
     private final S3SignedUrlService s3SignedUrlService;
  
-    @PostMapping("/generate-get-url/{userId}")
+    @PostMapping("/generate-get-url/{username}")
     public ResponseEntity<ResponseWrapper<String>> generateGetPresignedUrlRequest(
-            @PathVariable String userId ) {
+            @PathVariable String username ) {
         log.info("Generating GET url for key");
-        return ResponseEntity.ok().body(new ResponseWrapper<>(s3SignedUrlService.generateGetSignedUrl(userId)));
+        return ResponseEntity.ok().body(new ResponseWrapper<>(s3SignedUrlService.generateGetSignedUrl(username)));
     }
 
-    @PostMapping("/generate-put-url/{userId}")
+    @PostMapping("/generate-put-url/{username}")
     public ResponseEntity<ResponseWrapper<String>> generatePutPresignedUrlRequest(
-            @PathVariable String userId ) {
-        return ResponseEntity.ok().body(new ResponseWrapper<>(s3SignedUrlService.generatePutSignedUrl(userId)));
+            @PathVariable String username ) {
+        return ResponseEntity.ok().body(new ResponseWrapper<>(s3SignedUrlService.generatePutSignedUrl(username)));
     }
 
-    @PostMapping("/generate-delete-url/{userId}")
+    @PostMapping("/generate-delete-url/{username}")
     public ResponseEntity<ResponseWrapper<String>> generateDeletePresignedUrlRequest(
-            @PathVariable String userId ) {
-        return ResponseEntity.ok().body(new ResponseWrapper<>(s3SignedUrlService.generateDeleteSignedUrl(userId)));
+            @PathVariable String username ) {
+        return ResponseEntity.ok().body(new ResponseWrapper<>(s3SignedUrlService.generateDeleteSignedUrl(username)));
     }
 
 }
