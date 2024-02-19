@@ -192,7 +192,7 @@ public class UserService {
         log.info("Fetching Friends");
         return currentUser.getFriends()
                 .stream()
-                .map(userRepo::findById)
+                .map(userRepo::findByUsername)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .map(UserMapper.INSTANCE::toDto)
