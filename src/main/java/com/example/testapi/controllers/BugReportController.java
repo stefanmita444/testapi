@@ -68,4 +68,6 @@ public class BugReportController {
         return new ResponseEntity<>(new ResponseWrapper<>(reports), HttpStatus.OK);
     }
 
+
+
 }

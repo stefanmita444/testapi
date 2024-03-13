@@ -1,6 +1,6 @@
 package com.example.testapi.services;
 
-import com.example.testapi.exceptions.ResourceNotFoundException;
+import com.example.testapi.exceptions.CustomException;
 import com.example.testapi.models.BugReport;
 import com.example.testapi.models.BugReportDto;
 import com.example.testapi.repos.BugReportRepository;
@@ -33,15 +33,14 @@ public class BugReportService {
     }
 
     public BugReport getBugReportById(String id) {
-        return bugReportRepository
-                .findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("No bug report found with that id\n\n"));
+        BugReport report = bugReportRepository.findById(id).orElseThrow(() -> new CustomException("No report found with id: " + id));
+        return report;
     }
 
     public List<BugReport> deleteBugReportById(String id) {
         log.info("Fetching user with id: " + id);
 
-        BugReport report = getBugReportById(id);
+        BugReport report = bugReportRepository.findById(id).orElseThrow(() -> new CustomException("No report found with id: " + id));
 
         log.info("Deleting bug report: " + id);
 

@@ -85,6 +85,7 @@ public class AuthenticationService {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(principal, credentials));
     }
 
+
     public String login (JwtRequest jwtRequest) throws CustomException{
         log.info("Converting principal to lowercase");
         jwtRequest.setPrincipal(jwtRequest.getPrincipal().toLowerCase());

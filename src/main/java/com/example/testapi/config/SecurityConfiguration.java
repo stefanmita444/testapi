@@ -62,6 +62,7 @@ public class SecurityConfiguration {
                                 "/images/*",
                                 "/api/v1/bug-reports",
                                 "/api/v1/bug-reports/**")
+
                         .permitAll()
                         .anyRequest()
                         .authenticated())

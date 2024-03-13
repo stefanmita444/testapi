@@ -198,6 +198,7 @@ public class UserService {
                 .map(UserMapper.INSTANCE::toDto)
                 .toList();
     }
+    
 
     public User updateUser(UpdatedUserDTO userDto) throws UsernameNotFoundException{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -371,6 +372,7 @@ public class UserService {
                 userRepo.save(friend);
                 log.error("Friend has added current user");
                 invitesRepo.delete(invite);
+                notificationService.sendPushNotificationToUser(friend.getExpoPushToken(), "Ezer", currentUser.getFirstName() + " " + currentUser.getLastName() + " accepted your invite!");
             } else if (handleInvite.getType().equals("cancel")){
                 invitesRepo.delete(invite);
             } else {
