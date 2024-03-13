@@ -1,9 +1,8 @@
 package com.example.testapi.services;
 
-import com.example.testapi.exceptions.ResourceNotFoundException;
+import com.example.testapi.exceptions.CustomException;
 import com.example.testapi.models.BugReport;
 import com.example.testapi.models.BugReportDto;
-import com.example.testapi.models.BugStatus;
 import com.example.testapi.repos.BugReportRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +25,6 @@ public class BugReportService {
                         .builder()
                         .description(bugReport.getDescription())
                         .timestamp(LocalDateTime.now(ZoneId.of("America/Chicago")))
-                        .status(BugStatus.OPEN)
                         .build());
     }
 
@@ -34,32 +32,16 @@ public class BugReportService {
         return bugReportRepository.findAll();
     }
 
-    public List<BugReport> resolveBugReport(String id, BugStatus status) {
-        log.info("Fetching bug report with id: " + id);
-        BugReport report = getBugReportById(id);
-        log.info("Bug Report Found");
-        report.setStatus(status);
-        log.info("Bug report status set as: " + status);
-        log.info("Bug Report saving in DB");
-        bugReportRepository.save(report);
-        return getBugReportsByStatus(BugStatus.OPEN);
-    }
-
     public BugReport getBugReportById(String id) {
-        return bugReportRepository
-                .findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("No bug report found with that id\n\n"));
+        BugReport report = bugReportRepository.findById(id).orElseThrow(() -> new CustomException("No report found with id: " + id));
+        return report;
     }
 
-    public List<BugReport> getBugReportsByStatus(BugStatus status) {
-        return bugReportRepository
-                .findBugReportsByStatus(status);
-    }
 
     public List<BugReport> deleteBugReportById(String id) {
         log.info("Fetching user with id: " + id);
 
-        BugReport report = getBugReportById(id);
+        BugReport report = bugReportRepository.findById(id).orElseThrow(() -> new CustomException("No report found with id: " + id));
 
         log.info("Deleting bug report: " + id);
 
@@ -67,7 +49,7 @@ public class BugReportService {
 
         log.info("Bug report deleted");
 
-        return getBugReportsByStatus(BugStatus.OPEN);
+        return getAllBugReports();
     }
 }
 

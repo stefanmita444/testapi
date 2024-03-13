@@ -31,16 +31,6 @@ public class BugReportController {
         return ResponseEntity.status(HttpStatus.OK).body(report);
     }
 
-    @PostMapping("/resolve/{id}/{status}")
-    public ResponseEntity<BugReportsList> resolveBugReport(
-            @PathVariable String id,
-            @PathVariable BugStatus status) {
-        log.info("Creating bug report ------------------------");
-        List<BugReport> reports = bugReportService.resolveBugReport(id, status);
-        log.info("Bug Report Edited for: " + id + " ---------------\n\n");
-        return ResponseEntity.status(HttpStatus.OK).body(new BugReportsList(reports));
-    }
-
     @GetMapping
     public ResponseEntity<BugReportsList> getAllBugReports() {
         log.info("Fetching all bug reports ---------------------------");
@@ -58,15 +48,6 @@ public class BugReportController {
         return new ResponseEntity<>(new BugReportWrapper(report), HttpStatus.OK);
     }
 
-    @GetMapping("/status/{status}")
-    public ResponseEntity<BugReportsList> getBugReportByStatus(
-            @PathVariable("status") BugStatus status) {
-        log.info("Fetching bug reports with status: " + status + " ---------------------------");
-        List<BugReport> reports = bugReportService.getBugReportsByStatus(status);
-        log.info("Bug Reports returned ---------------------------------");
-        return new ResponseEntity<>(new BugReportsList(reports), HttpStatus.OK);
-    }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<BugReportsList> deleteBugReport(
             @PathVariable String id ) {
@@ -75,5 +56,7 @@ public class BugReportController {
         log.info("Deletion Complete ----------------------------------");
         return new ResponseEntity<>(new BugReportsList(reports), HttpStatus.OK);
     }
+
+
 
 }
