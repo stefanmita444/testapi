@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.testapi.models.BugReport;
 import com.example.testapi.models.BugReportDto;
-import com.example.testapi.models.BugStatus;
 import com.example.testapi.models.ResponseWrapper;
 import com.example.testapi.services.BugReportService;
 
@@ -43,16 +42,6 @@ public class BugReportController {
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(report));
     }
 
-    @PostMapping("/resolve/{id}/{status}")
-    public ResponseEntity<ResponseWrapper<List<BugReport>>> resolveBugReport(
-            @PathVariable String id,
-            @PathVariable BugStatus status) {
-        log.info("Creating bug report ------------------------");
-        List<BugReport> reports = bugReportService.resolveBugReport(id, status);
-        log.info("Bug Report Edited for: " + id + " ---------------\n\n");
-        return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper<>(reports));
-    }
-
     @GetMapping
     public ResponseEntity<ResponseWrapper<List<BugReport>>> getAllBugReports() {
         log.info("Fetching all bug reports ---------------------------");
@@ -68,15 +57,6 @@ public class BugReportController {
         BugReport report = bugReportService.getBugReportById(id);
         log.info("Bug Report Found with id: " + id + " ---------------------------------");
         return new ResponseEntity<>(new ResponseWrapper<>(report), HttpStatus.OK);
-    }
-
-    @GetMapping("/status/{status}")
-    public ResponseEntity<ResponseWrapper<List<BugReport>>> getBugReportByStatus(
-            @PathVariable("status") BugStatus status) {
-        log.info("Fetching bug reports with status: " + status + " ---------------------------");
-        List<BugReport> reports = bugReportService.getBugReportsByStatus(status);
-        log.info("Bug Reports returned ---------------------------------");
-        return new ResponseEntity<>(new ResponseWrapper<>(reports), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
