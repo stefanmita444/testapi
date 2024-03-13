@@ -12,14 +12,14 @@ spring:
 
 
 server:
-  port: 8080
+  port: 8081
 
 jwt:
     secret: 
 
 aws:
   s3:
-    bucketName: userprofilepicturebucket
+    bucketName: dev-s3-profile-pic-2
   
 
 

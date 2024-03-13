@@ -20,6 +20,7 @@ public class BugReport {
     private String id;
     @NotNull(message = "Please provide the Description")
     private String description;
+
     private LocalDateTime timestamp;
 }
 
