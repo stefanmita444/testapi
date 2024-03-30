@@ -70,7 +70,7 @@ public class TestapiApplicationTest {
         JwtResponse jwtResponse = authenticationService.register(signUpDto);
 
         assertNotNull(jwtResponse);
-        assertEquals("token", jwtResponse.getJwtToken());
+        assertEquals("token", jwtResponse.getData());
         verify(userRepo).save(any(User.class));
         
     }

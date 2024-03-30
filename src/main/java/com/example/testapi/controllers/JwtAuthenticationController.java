@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -50,7 +51,7 @@ public class JwtAuthenticationController {
     )
     @PostMapping("/register")
     public ResponseEntity<JwtResponse> registerUser(
-            @ModelAttribute SignUpDto signUpDto) throws ParseException {
+            @Validated @ModelAttribute SignUpDto signUpDto) throws ParseException {
 
         log.info("Initiating Registration--------------------------------\n");
         JwtResponse jwtResponse = authenticationService.register(signUpDto);

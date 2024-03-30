@@ -20,15 +20,20 @@ public class SignUpDto {
 
     @NotNull(message = "First name can't be blank!")
     private String firstName;
+    
     @NotNull(message = "Last name cant be blank!")
     private String lastName;
-    @NotNull(message = "Username cant be blank!")
+
+    @NotNull(message = "Username can't be blank")
+    @Size(min = 8, max = 20, message = "Username must be greater than 8 characters")
     private String username;
-    @Email(message = "It has to have the email format!")
-    @NotNull(message = "Email cant be blank!")
+
+    @NotNull(message = "Email cant be null")
+    @Email(message = "Email must follow email formatting")
     private String email;
-    @NotNull(message = "Password cant be blank!")
-    @Size(min = 9)
+
+    @NotNull(message = "Password cant be blank")
+    @Size(min = 9, message = "Password must be greater than 9 characters")
     private String password;
 
     private String dob;

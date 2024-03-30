@@ -10,10 +10,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class JwtRequest {
+    
     @NotNull(message = "Username/email cannot be empty!")
     private String principal;
+
     @NotNull(message = "Password cannot be empty!")
-    @Size(min = 9, max = 30, message = "Password must be greater than 9 characters!")
+    @Size(min = 9, message = "Password must be greater than 9 characters!")
     private String password;
 
     private String expoPushToken;

@@ -27,19 +27,23 @@ public class User implements UserDetails {
 
     @Id
     private String id;
-    @NotNull
+    
+    @NotNull(message = "First name cant be blank!")
     private String firstName;
-    @NotNull
+
+    @NotNull(message = "Last name cant be blank!")
     private String lastName;
-    @NotNull
-    @Size(min = 8, max = 20)
+
+    @NotNull(message = "Username can't be blank")
+    @Size(min = 8, max = 20, message = "Username must be greater than 8 characters")
     private String username;
-    @NotNull
-    @Size(min = 8)
+
+    @NotNull(message = "Password cant be blank")
+    @Size(min = 8, message = "Password must be greater than 9 characters")
     private String password;
+
     @NotNull(message = "Email cant be null")
-    @Email
-    @Size(max = 20)
+    @Email(message = "Email must follow email formatting")
     private String email;
 
     private Date purity;
