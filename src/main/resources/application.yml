@@ -12,7 +12,7 @@ spring:
 
 
 server:
-  port: 8081
+  port: 8080
 
 jwt:
     secret: 
@@ -20,9 +20,6 @@ jwt:
 aws:
   s3:
     bucketName: dev-s3-profile-pic-2
-  
-
-
 
 logging:
   pattern:
