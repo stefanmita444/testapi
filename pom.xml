@@ -193,7 +193,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <image>
-                        <name>stefanmita1234/ezer:app_container_dev</name>
+                        <name>stefanmita1234/ezer:app_container_qa</name>
                     </image>
                     <pullPolicy>IF_NOT_PRESENT</pullPolicy>
                 </configuration>
