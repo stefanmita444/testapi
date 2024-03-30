@@ -8,7 +8,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -40,7 +39,7 @@ public class SignUpDto {
 
     private String purity;
 
-    private MultipartFile image;
+    private String image;
 
     private String expoPushToken;
 }

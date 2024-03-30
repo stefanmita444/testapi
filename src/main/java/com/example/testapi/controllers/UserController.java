@@ -1,16 +1,7 @@
 package com.example.testapi.controllers;
 
-import com.example.testapi.exceptions.CustomException;
-import com.example.testapi.mappers.UserMapper;
-import com.example.testapi.models.*;
-import com.example.testapi.services.PushNotificationService;
-import com.example.testapi.services.UserService;
-import io.github.jav.exposerversdk.PushClientException;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,11 +10,32 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartException;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.example.testapi.mappers.UserMapper;
+import com.example.testapi.models.Push;
+import com.example.testapi.models.ResponseWrapper;
+import com.example.testapi.models.UpdatedUserDTO;
+import com.example.testapi.models.User;
+import com.example.testapi.models.UserDto;
+import com.example.testapi.services.PushNotificationService;
+import com.example.testapi.services.UserService;
+
+import io.github.jav.exposerversdk.PushClientException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
@@ -35,26 +47,26 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
     private final PushNotificationService pushNotificationService;
-
+    
     @Operation(
             description = "Get endpoint for all users",
             summary = "This endpoint will return a list of users"
     )
     @GetMapping
-    public ResponseEntity<UserDtoListDto> getUsers() {
+    public ResponseEntity<ResponseWrapper<List<UserDto>>> getUsers() {
         log.info("Initiating getUsers----------------");
-        return new ResponseEntity<>(new UserDtoListDto(userService.findAll().stream()
+        return new ResponseEntity<>(new ResponseWrapper<List<UserDto>>(userService.findAll().stream()
                 .map(UserMapper.INSTANCE::toDto)
                 .toList()), HttpStatus.OK);
     }
 
     @GetMapping("/getMyself")
-    public ResponseEntity<UserDto> getMyself() {
+    public ResponseEntity<ResponseWrapper<UserDto>> getMyself() {
         log.info("Getting current user-------------------");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByUsername(authentication.getName());
         log.info("Return Complete---------------------\n\n");
-        return new ResponseEntity<>( UserMapper.INSTANCE.toDto(user), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseWrapper<UserDto>(UserMapper.INSTANCE.toDto(user)), HttpStatus.OK);
     }
 
     @Operation(
@@ -62,7 +74,7 @@ public class UserController {
             summary = "This endpoint will return a list of users"
     )
     @GetMapping("/search")
-    public ResponseEntity<Page<UserDto>> searchUsers(
+    public ResponseEntity<ResponseWrapper<Page<UserDto>>> searchUsers(
             @Parameter(description = "Search query")
             @RequestParam("query") String query,
             @Parameter(description = "Page number")
@@ -78,7 +90,7 @@ public class UserController {
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
         Page<UserDto> results = userService.searchHandle(query, pageable);
         log.info("Fetching complete--------------------------\n\n");
-        return new ResponseEntity<>(results, HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseWrapper<>(results), HttpStatus.OK);
     }
 
     @Operation(
@@ -86,34 +98,12 @@ public class UserController {
             summary = "This endpoint will update a user and will return an updated user object"
     )
     @PatchMapping()
-    public ResponseEntity<UserDto> updateUser(
+    public ResponseEntity<ResponseWrapper<UserDto>> updateUser(
             @ModelAttribute UpdatedUserDTO userDto) {
         log.info("Initiating User Update----------------------------------------------");
         User updatedUser = userService.updateUser(userDto);
         log.info("User Update Complete-------------------------------------\n\n");
-        return ResponseEntity.ok(UserMapper.INSTANCE.toDto(updatedUser));
-    }
-
-    @Operation(
-            description = "Picture Update Endpoint",
-            summary = "This endpoint will update a user's picture and will return an updated user object"
-    )
-    @PostMapping("/picture")
-    public ResponseEntity<UserDto> updatePicture(
-            @Parameter(description = "Multipart file", required = true)
-            @RequestParam("file") MultipartFile file) throws MultipartException {
-        try {
-
-            log.info("Initiating picture upload------------------");
-
-            User currentUser = userService.uploadPicture(file);
-
-            log.info("Picture uploaded successfully-----------------------\n\n");
-
-            return ResponseEntity.ok().body(UserMapper.INSTANCE.toDto(currentUser));
-        } catch (Exception e) {
-            throw new CustomException("Cannot upload picture ");
-        }
+        return ResponseEntity.ok(new ResponseWrapper<UserDto>(UserMapper.INSTANCE.toDto(updatedUser)));
     }
 
     @Operation(
@@ -149,13 +139,13 @@ public class UserController {
             summary = "This endpoint will Reset the purity of the current user and return a user object"
     )
     @PostMapping("/resetPurity")
-    public ResponseEntity<UserDto> resetPurity() {
+    public ResponseEntity<ResponseWrapper<UserDto>> resetPurity() {
         log.info("Initiating Purity Reset-------------------------------");
 
         User currentUser = userService.resetPurity();
 
         log.info("Purity Reset Complete---------------------------------\n\n");
-        return new ResponseEntity<>(UserMapper.INSTANCE.toDto(currentUser), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseWrapper<>(UserMapper.INSTANCE.toDto(currentUser)), HttpStatus.OK);
     }
 
     @Operation(
@@ -163,11 +153,11 @@ public class UserController {
             summary = "This endpoint will Delete a user from database and all references to the user"
     )
     @DeleteMapping()
-    public ResponseEntity<HttpStatus> deleteUser() {
+    public ResponseEntity<ResponseWrapper<HttpStatus>> deleteUser() {
         log.info("Initiating Deletion -----------------------");
         userService.deleteUser();
         log.info("Deletion Complete-----------------------------\n\n");
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseWrapper<>(HttpStatus.OK), HttpStatus.OK);
     }
 
     

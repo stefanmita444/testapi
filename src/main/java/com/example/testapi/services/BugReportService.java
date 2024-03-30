@@ -1,16 +1,18 @@
 package com.example.testapi.services;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.example.testapi.exceptions.CustomException;
 import com.example.testapi.models.BugReport;
 import com.example.testapi.models.BugReportDto;
 import com.example.testapi.repos.BugReportRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.List;
 
 @Slf4j
 @Service

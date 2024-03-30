@@ -24,53 +24,53 @@ public class InvitesController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<InvitesDTO> friendRequest(
+    public ResponseEntity<ResponseWrapper<List<InviteDto>>> friendRequest(
             @Parameter(description = "Invite object", required = true)
             @RequestBody Invite invite) throws PushClientException, InterruptedException {
         log.info("Initiating invitation");
         userService.saveInvite(invite);
         log.info("Invite sent");
-        return new ResponseEntity<>(new InvitesDTO(userService.getRequesterOrReceiverInvites()), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseWrapper<>(userService.getRequesterOrReceiverInvites()), HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<InvitesDTO> getRequesterOrReceiverInvites() throws IllegalArgumentException {
+    public ResponseEntity<ResponseWrapper<List<InviteDto>>> getRequesterOrReceiverInvites() throws IllegalArgumentException {
         log.info("Initiating getting MATCHING Invites---------------------------");
 
         List<InviteDto> invitesDTO = userService.getRequesterOrReceiverInvites();
 
         log.info("Getting matching invites complete--------------------------\n\n");
 
-        return new ResponseEntity<>(new InvitesDTO(invitesDTO), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseWrapper<>(invitesDTO), HttpStatus.OK);
     }
 
     @GetMapping("/all")
-    public ResponseEntity<InvitesDTO> getAllInvites() {
+    public ResponseEntity<ResponseWrapper<List<InviteDto>>> getAllInvites() {
         log.info("Initiating getting ALL Invites---------------------------");
 
         List<InviteDto> invitesDTO = userService.getAllInvites();
 
         log.info("Getting all invites complete--------------------------\n\n");
-        return new ResponseEntity<>(new InvitesDTO(invitesDTO), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseWrapper<>(invitesDTO), HttpStatus.OK);
     }
 
     @DeleteMapping
-    public ResponseEntity<HttpStatus> deleteAllInvites() {
+    public ResponseEntity<ResponseWrapper<HttpStatus>> deleteAllInvites() {
 
         log.info("Initiating Deleting All Invites---------------------------");
 
         userService.deleteAllInvites();
 
         log.info("Deleting all invites complete--------------------------\n\n");
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseWrapper<>(HttpStatus.OK), HttpStatus.OK);
     }
 
     @PostMapping("/handle")
-    public ResponseEntity<HandledInvite> handleInvite(
+    public ResponseEntity<ResponseWrapper<HandledInvite>> handleInvite(
             @RequestBody HandleInvite handleInvite) throws PushClientException, InterruptedException {
         log.info("Initiating handling---------------------------");
         HandledInvite handledInvite = userService.handleInvite(handleInvite);
         log.info("Handling Complete---------------------------\n\n");
-        return new ResponseEntity<>(handledInvite, HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseWrapper<>(handledInvite), HttpStatus.OK);
     }
 }
