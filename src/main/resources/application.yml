@@ -19,7 +19,7 @@ jwt:
 
 aws:
   s3:
-    bucketName: dev-s3-profile-pic-2
+    bucketName: qa-s3-profile-pic-2
   
 
 
