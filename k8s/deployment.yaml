@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: your-app-deployment
+  labels:
+    app: your-app
+spec:
+  replicas: 3  # Number of pod replicas
+  selector:
+    matchLabels:
+      app: your-app
+  template:
+    metadata:
+      labels:
+        app: your-app
+    spec:
+      containers:
+        - name: your-app-container
+          image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/your-app-repo:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ENVIRONMENT
+              value: "production"
+      imagePullSecrets:
+        - name: ecr-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: your-app-service
+spec:
+  selector:
+    app: your-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
